@@ -1,0 +1,46 @@
+<div class="container">
+    <form [formGroup]="formTag">
+      <input
+        class="tg"
+        type="text"
+        [(ngModel)]="tag"
+        ngDefaultControl
+        placeholder="Введите тэг..."
+        name="tagname"
+        formControlName="tagName"
+        >
+      <small *ngIf="formTag.get('tagName').errors?.required && formTag.get('tagName').touched" class="error">
+        Поле не может быть пустым
+      </small>
+      <button class="btn"
+              [class.load] = "formTag.get('tagName').value != '' "
+              [class.dis] = "formTag.get('tagName').errors?.required"
+              [disabled]="formTag.get('tagName').errors?.required"
+              (click)="loadImg(tag)">Загрузить</button>
+      <button class="btn danger" (click)="clearImg()">Очистить</button>
+      <button class="btn group" (click)="groupAll()">Разгруппировать</button>
+    </form>
+
+
+
+
+    <div class="main_grid" *ngIf="!visibleFlag else groupModel">
+      <div class="grid_item" *ngFor="let img of images">
+        <iframe [src]="img.gif | safe" width="100%" height="100%"></iframe>
+      </div>
+      <span *ngIf="error" class="error">Ничего не найдено</span>
+    </div>
+
+    <ng-template #groupModel>
+      <div [(ngModel)]="visibleFlag" ngDefaultControl class="group_block">
+          <div class="tag_container" *ngFor="let tag of tags">
+              <p>{{tag | titlecase}}</p>
+              <div class="fil_grid" *ngFor="let img of images | pfilter: tag">
+                <div class="fil_item">
+                  <iframe [src]="img.gif | safe" width="100%" height="100%"></iframe>
+                </div>
+              </div>
+          </div>
+      </div>
+    </ng-template>
+</div>
